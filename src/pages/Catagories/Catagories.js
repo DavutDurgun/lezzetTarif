@@ -12,14 +12,17 @@ import styles from './Catagories.style';
 //services
 import useFetch from '../../hooks/useFetch/useFetch';
 
-const Catagories = () => {
+const Catagories = ({ navigation }) => {
     const { error, isLoading, data } = useFetch('https://www.themealdb.com/api/json/v1/1/categories.php');
 
+    const handleSelected = (item) => {
+        navigation.navigate('MealsPage', { categoryName: item.strCategory, });
+    }
 
     //satırlar render ediliyor
-    const CatagoriesCardRender = ({ item }) => <CatagoriesCard data={item} />;
+    const CatagoriesCardRender = ({ item }) => <CatagoriesCard data={item} onSelected={handleSelected} />;
 
-    const CatagoriesCarKeyExtracor = (item) => item.idCategory;
+    const CatagoriesCarKeyExtractor = (item) => item.idCategory;
 
     if (isLoading)
         return <Loading />;
@@ -30,9 +33,9 @@ const Catagories = () => {
     return (
         <SafeAreaView style={styles.container}>
             <FlatList
-                data={data}
+                data={data.categories || []}
                 renderItem={CatagoriesCardRender}
-                keyExtractor={CatagoriesCarKeyExtracor}
+                keyExtractor={CatagoriesCarKeyExtractor}
             />
         </SafeAreaView>
     );
